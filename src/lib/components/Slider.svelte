@@ -35,14 +35,15 @@
   }
 </script>
 
-<div class="slider-container">
+<div class="slider-container" data-testid="slider-{label.toLowerCase().replace(/\s+/g, '-')}">
   <div class="slider-header">
     <label for={label}>{label}</label>
-    <span class="value">{value}{unit}</span>
+    <span class="value" data-testid="slider-value-{label.toLowerCase().replace(/\s+/g, '-')}">{value}{unit}</span>
   </div>
   <input
     type="range"
     id={label}
+    data-testid="slider-input-{label.toLowerCase().replace(/\s+/g, '-')}"
     {min}
     {max}
     {step}

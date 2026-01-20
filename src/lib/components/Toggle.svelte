@@ -31,6 +31,7 @@
   class="toggle"
   class:checked
   class:disabled
+  data-testid="toggle-{label.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '')}"
   {disabled}
   onclick={handleChange}
   onkeydown={handleKeydown}

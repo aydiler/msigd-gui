@@ -27,10 +27,11 @@
   }
 </script>
 
-<div class="select-container">
+<div class="select-container" data-testid="select-{label.toLowerCase().replace(/\s+/g, '-')}">
   <label for={label}>{label}</label>
   <select
     id={label}
+    data-testid="select-input-{label.toLowerCase().replace(/\s+/g, '-')}"
     {value}
     {disabled}
     onchange={handleChange}

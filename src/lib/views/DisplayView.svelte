@@ -71,9 +71,9 @@
   }
 </script>
 
-<div class="display-view">
+<div class="display-view" data-testid="view-display">
   {#if monitorState.loading}
-    <div class="loading">Loading settings...</div>
+    <div class="loading" data-testid="loading">Loading settings...</div>
   {:else if monitorState.settings}
     <div class="settings-group">
       <h3>Picture</h3>
