@@ -64,13 +64,14 @@ impl MsigdExecutor {
     }
 
     /// Set color RGB values
+    /// msigd expects comma-separated format: r,g,b (e.g., "50,50,50")
     pub fn set_color_rgb(
         monitor_id: &str,
         r: u8,
         g: u8,
         b: u8,
     ) -> Result<String, MsigdError> {
-        let value = format!("{}:{}:{}", r, g, b);
+        let value = format!("{},{},{}", r, g, b);
         Self::execute(&["--monitor", monitor_id, "--color_rgb", &value])
     }
 
