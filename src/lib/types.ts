@@ -26,16 +26,16 @@ export interface MysticLightConfig {
   colors: string[];
 }
 
+// msigd supported modes: off, static, breathing, blinking, flashing, blinds, meteor, rainbow, random
 export type MysticLightMode =
   | "off"
   | "static"
   | "breathing"
   | "blinking"
   | "flashing"
-  | "double_flashing"
-  | "lightning"
-  | "rainbow"
+  | "blinds"
   | "meteor"
-  | "rainbow_gradient";
+  | "rainbow"
+  | "random";
 
 export type Tab = "display" | "color" | "led" | "advanced";

@@ -73,7 +73,8 @@ impl MsigdParser {
             color_preset: Self::parse_color_preset(&values).unwrap_or(ColorPreset::Normal),
             color_rgb: Self::parse_color_rgb(&values).unwrap_or(ColorRgb { r: 50, g: 50, b: 50 }),
             hdcr: Self::parse_bool(&values, "hdcr").unwrap_or(false),
-            refresh_rate_display: Self::parse_bool(&values, "refresh_rate_display").unwrap_or(false),
+            // msigd outputs "refresh_display" not "refresh_rate_display"
+            refresh_rate_display: Self::parse_bool(&values, "refresh_display").unwrap_or(false),
         })
     }
 

@@ -9,53 +9,52 @@
   let ledColor: string = $state("#ff0000");
   let ledColor2: string = $state("#0000ff");
 
+  // msigd supported modes: off, static, breathing, blinking, flashing, blinds, meteor, rainbow, random
   const modes: { value: MysticLightMode; label: string }[] = [
     { value: "off", label: "Off" },
     { value: "static", label: "Static" },
     { value: "breathing", label: "Breathing" },
     { value: "blinking", label: "Blinking" },
     { value: "flashing", label: "Flashing" },
-    { value: "double_flashing", label: "Double Flashing" },
-    { value: "lightning", label: "Lightning" },
-    { value: "rainbow", label: "Rainbow" },
+    { value: "blinds", label: "Blinds" },
     { value: "meteor", label: "Meteor" },
-    { value: "rainbow_gradient", label: "Rainbow Gradient" },
+    { value: "rainbow", label: "Rainbow" },
+    { value: "random", label: "Random" },
   ];
 
-  function hexToRgb(hex: string): { r: number; g: number; b: number } {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-      ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
-      : { r: 0, g: 0, b: 0 };
+  // Convert #RRGGBB to 0xRRGGBB format for msigd
+  function hexToMsigdColor(hex: string): string {
+    // Remove # prefix and add 0x prefix
+    return "0x" + hex.replace("#", "").toUpperCase();
   }
 
   function buildMysticConfig(): string {
-    // Format: mode:r:g:b or mode:r1:g1:b1:r2:g2:b2 for multi-color modes
-    const rgb1 = hexToRgb(ledColor);
+    // msigd format: ledgroup:mode:colors
+    // ledgroup is 0 or 1
+    // colors are comma-separated in 0xRRGGBB format
+    const ledGroup = "0"; // Use LED group 0
 
     if (ledMode === "off") {
-      return "off";
+      return `${ledGroup}:off:0x000000`;
     }
 
-    if (ledMode === "rainbow" || ledMode === "rainbow_gradient") {
-      return ledMode;
+    if (ledMode === "rainbow" || ledMode === "random") {
+      // Rainbow and random modes don't need colors
+      return `${ledGroup}:${ledMode}:0x000000`;
     }
+
+    const color1 = hexToMsigdColor(ledColor);
 
     // Modes that support two colors
     if (
       ledMode === "breathing" ||
-      ledMode === "blinking" ||
-      ledMode === "double_flashing"
+      ledMode === "blinking"
     ) {
-      const rgb2 = hexToRgb(ledColor2);
-      return `${ledMode}:${rgb1.r}:${rgb1.g}:${rgb1.b}:${rgb2.r}:${rgb2.g}:${rgb2.b}`;
+      const color2 = hexToMsigdColor(ledColor2);
+      return `${ledGroup}:${ledMode}:${color1},${color2}`;
     }
 
-    return `${ledMode}:${rgb1.r}:${rgb1.g}:${rgb1.b}`;
+    return `${ledGroup}:${ledMode}:${color1}`;
   }
 
   async function applyLedSettings() {
@@ -77,14 +76,12 @@
 
   // Check if current mode supports colors
   const showColorPicker = $derived(
-    ledMode !== "off" && ledMode !== "rainbow" && ledMode !== "rainbow_gradient"
+    ledMode !== "off" && ledMode !== "rainbow" && ledMode !== "random"
   );
 
   // Check if current mode supports second color
   const showSecondColor = $derived(
-    ledMode === "breathing" ||
-      ledMode === "blinking" ||
-      ledMode === "double_flashing"
+    ledMode === "breathing" || ledMode === "blinking"
   );
 </script>
 

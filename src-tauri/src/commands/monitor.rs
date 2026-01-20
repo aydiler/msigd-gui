@@ -82,3 +82,67 @@ pub fn set_eye_saver(monitor_id: String, enabled: bool) -> Result<(), MsigdError
 pub fn check_msigd_available() -> Result<bool, MsigdError> {
     MsigdExecutor::check_available()
 }
+
+/// Set color preset (cool, normal, warm, custom)
+#[command]
+pub fn set_color_preset(monitor_id: String, value: String) -> Result<(), MsigdError> {
+    let valid_values = ["cool", "normal", "warm", "custom"];
+    if !valid_values.contains(&value.as_str()) {
+        return Err(MsigdError::InvalidValue(format!(
+            "Color preset must be one of: {}",
+            valid_values.join(", ")
+        )));
+    }
+    MsigdExecutor::set_enum(&monitor_id, "color_preset", &value)?;
+    Ok(())
+}
+
+/// Set color RGB values (0-100 each)
+#[command]
+pub fn set_color_rgb(monitor_id: String, r: u8, g: u8, b: u8) -> Result<(), MsigdError> {
+    if r > 100 || g > 100 || b > 100 {
+        return Err(MsigdError::InvalidValue(
+            "RGB values must be 0-100".to_string(),
+        ));
+    }
+    MsigdExecutor::set_color_rgb(&monitor_id, r, g, b)?;
+    Ok(())
+}
+
+/// Set image enhancement mode
+#[command]
+pub fn set_image_enhancement(monitor_id: String, value: String) -> Result<(), MsigdError> {
+    let valid_values = ["off", "weak", "medium", "strong", "strongest"];
+    if !valid_values.contains(&value.as_str()) {
+        return Err(MsigdError::InvalidValue(format!(
+            "Image enhancement must be one of: {}",
+            valid_values.join(", ")
+        )));
+    }
+    MsigdExecutor::set_enum(&monitor_id, "image_enhancement", &value)?;
+    Ok(())
+}
+
+/// Set HDCR (High Dynamic Contrast Ratio)
+#[command]
+pub fn set_hdcr(monitor_id: String, enabled: bool) -> Result<(), MsigdError> {
+    let value = if enabled { "on" } else { "off" };
+    MsigdExecutor::set_enum(&monitor_id, "hdcr", value)?;
+    Ok(())
+}
+
+/// Set refresh rate display (show refresh rate on screen)
+#[command]
+pub fn set_refresh_rate_display(monitor_id: String, enabled: bool) -> Result<(), MsigdError> {
+    let value = if enabled { "on" } else { "off" };
+    // msigd uses "refresh_display" not "refresh_rate_display"
+    MsigdExecutor::set_enum(&monitor_id, "refresh_display", value)?;
+    Ok(())
+}
+
+/// Set Mystic Light LED configuration
+#[command]
+pub fn set_mystic_light(monitor_id: String, config: String) -> Result<(), MsigdError> {
+    MsigdExecutor::set_mystic_light(&monitor_id, &config)?;
+    Ok(())
+}
