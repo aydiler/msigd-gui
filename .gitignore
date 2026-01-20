@@ -4,6 +4,11 @@ node_modules/
 # Build outputs
 dist/
 src-tauri/target/
+target/
+
+# Test artifacts
+playwright-report/
+test-results/
 
 # IDE
 .vscode/

@@ -6,20 +6,38 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:wdio": "wdio run ./wdio.conf.ts",
+    "test:wdio:build": "npm run tauri build && npm run test:wdio",
+    "test:hardware": "./tests/hardware/run-tests.sh",
+    "test:hardware:display": "./tests/hardware/run-tests.sh display",
+    "test:hardware:color": "./tests/hardware/run-tests.sh color",
+    "test:hardware:led": "./tests/hardware/run-tests.sh led"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",
     "@tauri-apps/plugin-shell": "^2.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@tauri-apps/cli": "^2.0.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^25.0.9",
+    "@wdio/cli": "^9.23.2",
+    "@wdio/globals": "^9.23.0",
+    "@wdio/local-runner": "^9.23.2",
+    "@wdio/mocha-framework": "^9.23.2",
+    "@wdio/spec-reporter": "^9.23.2",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
     "tailwindcss": "^3.4.0",
-    "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.0",
     "vite": "^5.4.0"
   }

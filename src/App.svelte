@@ -3,6 +3,9 @@
   import { monitorState } from "./lib/state/monitors.svelte";
   import { uiState } from "./lib/state/ui.svelte";
   import DisplayView from "./lib/views/DisplayView.svelte";
+  import ColorView from "./lib/views/ColorView.svelte";
+  import LEDView from "./lib/views/LEDView.svelte";
+  import AdvancedView from "./lib/views/AdvancedView.svelte";
   import type { Tab } from "./lib/types";
 
   const tabs: { id: Tab; label: string }[] = [
@@ -22,13 +25,14 @@
   }
 </script>
 
-<main class="app">
+<main class="app" data-testid="app">
   <!-- Header -->
-  <header class="header">
-    <h1>MSI Monitor Control</h1>
+  <header class="header" data-testid="header">
+    <h1 data-testid="app-title">MSI Monitor Control</h1>
 
     <select
       class="monitor-select"
+      data-testid="monitor-select"
       value={monitorState.selectedId ?? ""}
       onchange={handleMonitorChange}
       disabled={monitorState.loading || monitorState.monitors.length === 0}
@@ -46,13 +50,13 @@
   </header>
 
   <!-- Tab navigation -->
-  <nav class="tabs">
+  <nav class="tabs" data-testid="tabs">
     {#each tabs as tab (tab.id)}
       <button
         class="tab"
         class:active={uiState.activeTab === tab.id}
         onclick={() => uiState.setTab(tab.id)}
-        disabled={tab.id !== "display"}
+        data-testid="tab-{tab.id}"
       >
         {tab.label}
       </button>
@@ -60,33 +64,35 @@
   </nav>
 
   <!-- Content area -->
-  <div class="content">
+  <div class="content" data-testid="content">
     {#if monitorState.loading && monitorState.monitors.length === 0}
-      <div class="status-message">
+      <div class="status-message" data-testid="status-loading">
         <div class="spinner"></div>
         <p>Detecting monitors...</p>
       </div>
     {:else if monitorState.error}
-      <div class="status-message error">
+      <div class="status-message error" data-testid="status-error">
         <p>{monitorState.error}</p>
-        <button class="retry-button" onclick={() => monitorState.loadMonitors()}>
+        <button class="retry-button" data-testid="retry-button" onclick={() => monitorState.loadMonitors()}>
           Retry
         </button>
       </div>
     {:else if monitorState.monitors.length === 0}
-      <div class="status-message">
+      <div class="status-message" data-testid="status-no-monitors">
         <p>No MSI monitors detected</p>
         <p class="hint">Make sure your monitor is connected via USB</p>
-        <button class="retry-button" onclick={() => monitorState.loadMonitors()}>
+        <button class="retry-button" data-testid="scan-button" onclick={() => monitorState.loadMonitors()}>
           Scan Again
         </button>
       </div>
     {:else if uiState.activeTab === "display"}
       <DisplayView />
-    {:else}
-      <div class="status-message">
-        <p>Coming soon...</p>
-      </div>
+    {:else if uiState.activeTab === "color"}
+      <ColorView />
+    {:else if uiState.activeTab === "led"}
+      <LEDView />
+    {:else if uiState.activeTab === "advanced"}
+      <AdvancedView />
     {/if}
   </div>
 
@@ -187,11 +193,6 @@
   .tab.active {
     color: #3b82f6;
     border-bottom-color: #3b82f6;
-  }
-
-  .tab:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
   }
 
   /* Content */
