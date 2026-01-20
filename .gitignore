@@ -20,3 +20,8 @@ npm-debug.log*
 # Environment
 .env
 .env.local
+
+# Documentation (local notes)
+documentation/
+EGUI_VS_ICED.md
+GUI_OPTIONS.md
