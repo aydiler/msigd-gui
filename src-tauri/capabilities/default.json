@@ -1,0 +1,9 @@
+{
+  "$schema": "https://schemas.tauri.app/capability/v1",
+  "identifier": "default",
+  "description": "Default capabilities for msigd-gui",
+  "windows": ["main"],
+  "permissions": [
+    "core:default"
+  ]
+}

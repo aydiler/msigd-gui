@@ -1,0 +1,26 @@
+[package]
+name = "msigd-gui"
+version = "0.1.0"
+description = "GUI for controlling MSI gaming monitors"
+authors = ["Ahmet"]
+edition = "2021"
+
+[lib]
+name = "msigd_gui_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+tauri-plugin-localhost = "2.3.2"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
