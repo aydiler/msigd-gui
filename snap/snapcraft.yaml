@@ -1,0 +1,62 @@
+name: msigd-gui
+version: '1.0.0'
+summary: Control MSI gaming monitors on Linux
+description: |
+  A modern desktop GUI application for controlling MSI gaming monitor
+  settings including brightness, contrast, color temperature, LED lighting,
+  and more.
+
+  Features:
+  - Display settings (brightness, contrast, sharpness, response time)
+  - Color management (presets and RGB fine-tuning)
+  - LED control (MSI Mystic Light RGB modes)
+  - Multi-monitor support
+  - Settings persistence
+
+  Requires msigd CLI tool to be installed separately.
+
+grade: stable
+confinement: strict
+base: core22
+
+architectures:
+  - build-on: amd64
+
+apps:
+  msigd-gui:
+    command: bin/msigd-gui
+    desktop: share/applications/msigd-gui.desktop
+    extensions: [gnome]
+    plugs:
+      - home
+      - network
+      - raw-usb  # Required for monitor USB HID access
+      - hardware-observe
+
+parts:
+  msigd-gui:
+    plugin: nil
+    source: .
+    build-snaps:
+      - node/20/stable
+      - rustup/latest/stable
+    build-packages:
+      - libwebkit2gtk-4.1-dev
+      - libappindicator3-dev
+      - librsvg2-dev
+      - patchelf
+    stage-packages:
+      - libwebkit2gtk-4.1-0
+      - libgtk-3-0
+    override-build: |
+      rustup default stable
+      npm ci
+      npm run tauri build -- --bundles none
+
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      mkdir -p $SNAPCRAFT_PART_INSTALL/share/applications
+      mkdir -p $SNAPCRAFT_PART_INSTALL/share/icons/hicolor/128x128/apps
+
+      cp src-tauri/target/release/msigd-gui $SNAPCRAFT_PART_INSTALL/bin/
+      cp msigd-gui.desktop $SNAPCRAFT_PART_INSTALL/share/applications/
+      cp src-tauri/icons/128x128.png $SNAPCRAFT_PART_INSTALL/share/icons/hicolor/128x128/apps/msigd-gui.png

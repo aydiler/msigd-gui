@@ -1,0 +1,46 @@
+app-id: com.msigd.gui
+runtime: org.gnome.Platform
+runtime-version: '45'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.node20
+
+command: msigd-gui
+
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=all  # Required for USB HID access to monitors
+
+build-options:
+  append-path: /usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/node20/bin
+  env:
+    CARGO_HOME: /run/build/msigd-gui/cargo
+    npm_config_nodedir: /usr/lib/sdk/node20
+
+modules:
+  - name: msigd
+    buildsystem: simple
+    build-commands:
+      - make
+      - install -Dm755 msigd /app/bin/msigd
+    sources:
+      - type: git
+        url: https://github.com/couriersud/msigd.git
+        tag: v0.0.5
+
+  - name: msigd-gui
+    buildsystem: simple
+    build-commands:
+      - npm ci
+      - npm run build
+      - cargo build --release --manifest-path src-tauri/Cargo.toml
+      - install -Dm755 src-tauri/target/release/msigd-gui /app/bin/msigd-gui
+      - install -Dm644 msigd-gui.desktop /app/share/applications/com.msigd.gui.desktop
+      - install -Dm644 src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/com.msigd.gui.png
+      - install -Dm644 src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/com.msigd.gui.png
+    sources:
+      - type: dir
+        path: ..

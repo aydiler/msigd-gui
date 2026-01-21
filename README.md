@@ -62,14 +62,48 @@ sudo pacman -S webkit2gtk-4.1
 sudo apt install libwebkit2gtk-4.1-0 libgtk-3-0
 ```
 
-### Option 1: Install from .deb (Debian/Ubuntu)
+### Arch Linux (AUR)
 
 ```bash
-# Download the latest release
+# From AUR (build from source)
+yay -S msigd-gui
+
+# Or binary package
+yay -S msigd-gui-bin
+```
+
+### Debian/Ubuntu (.deb)
+
+```bash
+# Download from GitHub releases
+wget https://github.com/aydiler/msigd-gui/releases/download/v1.0.0/MSI.Monitor.Control_1.0.0_amd64.deb
 sudo dpkg -i "MSI Monitor Control_1.0.0_amd64.deb"
 ```
 
-### Option 2: Install from Source
+### Flatpak
+
+```bash
+# Install from Flathub (when available)
+flatpak install flathub com.msigd.gui
+
+# Or build locally
+cd flatpak
+flatpak-builder --user --install build com.msigd.gui.yml
+```
+
+### Snap
+
+```bash
+# Install from Snap Store (when available)
+sudo snap install msigd-gui
+
+# Or build locally
+cd snap
+snapcraft
+sudo snap install msigd-gui_1.0.0_amd64.snap --dangerous
+```
+
+### Build from Source
 
 ```bash
 git clone https://github.com/aydiler/msigd-gui.git
@@ -79,15 +113,8 @@ npm run tauri build
 
 # Install system-wide
 sudo ./install.sh
-```
 
-### Option 3: Run Without Installing
-
-```bash
-# After building, run directly
-./src-tauri/target/release/msigd-gui
-
-# On Wayland, use the launcher script
+# Or run directly
 ./msigd-gui.sh
 ```
 
