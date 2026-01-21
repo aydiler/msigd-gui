@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2025 Ahmet Diler -->
+<component type="desktop-application">
+  <id>io.github.aydiler.msigd-gui</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>MSI Monitor Control</name>
+  <summary>Control MSI gaming monitor settings</summary>
+
+  <developer id="io.github.aydiler">
+    <name>Ahmet Diler</name>
+  </developer>
+
+  <description>
+    <p>
+      A modern desktop application for controlling MSI gaming monitors on Linux.
+      Adjust display settings, color temperature, and LED lighting through an
+      intuitive graphical interface.
+    </p>
+    <p>Features include:</p>
+    <ul>
+      <li>Display settings - brightness, contrast, sharpness, response time</li>
+      <li>Color management - temperature presets and RGB fine-tuning</li>
+      <li>LED control - MSI Mystic Light RGB modes</li>
+      <li>Advanced options - HDCR, image enhancement, refresh rate OSD</li>
+      <li>Multi-monitor support - switch between connected MSI monitors</li>
+    </ul>
+    <p>
+      Requires the msigd CLI tool and a USB connection to your MSI monitor.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">io.github.aydiler.msigd-gui.desktop</launchable>
+
+  <url type="homepage">https://github.com/aydiler/msigd-gui</url>
+  <url type="bugtracker">https://github.com/aydiler/msigd-gui/issues</url>
+  <url type="vcs-browser">https://github.com/aydiler/msigd-gui</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/aydiler/msigd-gui/master/screenshots/display-tab.png</image>
+      <caption>Display settings - brightness, contrast, and performance options</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/aydiler/msigd-gui/master/screenshots/color-tab.png</image>
+      <caption>Color management - temperature presets and RGB tuning</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/aydiler/msigd-gui/master/screenshots/led-tab.png</image>
+      <caption>LED control - MSI Mystic Light RGB modes</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/aydiler/msigd-gui/master/screenshots/advanced-tab.png</image>
+      <caption>Advanced options and monitor information</caption>
+    </screenshot>
+  </screenshots>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="1.0.0" date="2025-01-21">
+      <description>
+        <p>Initial release with full monitor control functionality:</p>
+        <ul>
+          <li>Display settings (brightness, contrast, sharpness, response time)</li>
+          <li>Color temperature and RGB adjustment</li>
+          <li>MSI Mystic Light LED control</li>
+          <li>Multi-monitor support</li>
+          <li>Settings persistence</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+
+  <recommends>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </recommends>
+
+  <categories>
+    <category>Utility</category>
+    <category>Settings</category>
+    <category>HardwareSettings</category>
+  </categories>
+
+  <keywords>
+    <keyword>monitor</keyword>
+    <keyword>MSI</keyword>
+    <keyword>display</keyword>
+    <keyword>brightness</keyword>
+    <keyword>LED</keyword>
+    <keyword>mystic light</keyword>
+  </keywords>
+</component>

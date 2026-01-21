@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=MSI Monitor Control
+Comment=Control MSI gaming monitor settings
+Exec=msigd-gui
+Icon=io.github.aydiler.msigd-gui
+Terminal=false
+Type=Application
+Categories=Utility;Settings;HardwareSettings;
+Keywords=monitor;msi;display;brightness;led;mystic;
+StartupNotify=true
