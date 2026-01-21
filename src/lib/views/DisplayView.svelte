@@ -17,7 +17,7 @@
     if (!monitorId) return;
     try {
       await setBrightness(monitorId, value);
-      monitorState.updateSetting("brightness", value);
+      await monitorState.updateSetting("brightness", value);
     } catch (e) {
       uiState.showToast(String(e), "error");
     }
@@ -28,7 +28,7 @@
     if (!monitorId) return;
     try {
       await setContrast(monitorId, value);
-      monitorState.updateSetting("contrast", value);
+      await monitorState.updateSetting("contrast", value);
     } catch (e) {
       uiState.showToast(String(e), "error");
     }
@@ -39,7 +39,7 @@
     if (!monitorId) return;
     try {
       await setSharpness(monitorId, value);
-      monitorState.updateSetting("sharpness", value);
+      await monitorState.updateSetting("sharpness", value);
     } catch (e) {
       uiState.showToast(String(e), "error");
     }
@@ -50,7 +50,7 @@
     if (!monitorId) return;
     try {
       await setResponseTime(monitorId, value);
-      monitorState.updateSetting(
+      await monitorState.updateSetting(
         "responseTime",
         value as "normal" | "fast" | "fastest"
       );
@@ -64,7 +64,7 @@
     if (!monitorId) return;
     try {
       await setEyeSaver(monitorId, enabled);
-      monitorState.updateSetting("eyeSaver", enabled);
+      await monitorState.updateSetting("eyeSaver", enabled);
     } catch (e) {
       uiState.showToast(String(e), "error");
     }

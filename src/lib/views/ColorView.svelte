@@ -10,7 +10,7 @@
     if (!monitorId) return;
     try {
       await setColorPreset(monitorId, value);
-      monitorState.updateSetting(
+      await monitorState.updateSetting(
         "colorPreset",
         value as "cool" | "normal" | "warm" | "custom"
       );
@@ -25,13 +25,13 @@
     try {
       const { g, b } = monitorState.settings.colorRgb;
       await setColorRgb(monitorId, value, g, b);
-      monitorState.updateSetting("colorRgb", {
+      await monitorState.updateSetting("colorRgb", {
         ...monitorState.settings.colorRgb,
         r: value,
       });
       // Switch to custom preset when adjusting RGB
       if (monitorState.settings.colorPreset !== "custom") {
-        monitorState.updateSetting("colorPreset", "custom");
+        await monitorState.updateSetting("colorPreset", "custom");
       }
     } catch (e) {
       uiState.showToast(String(e), "error");
@@ -44,12 +44,12 @@
     try {
       const { r, b } = monitorState.settings.colorRgb;
       await setColorRgb(monitorId, r, value, b);
-      monitorState.updateSetting("colorRgb", {
+      await monitorState.updateSetting("colorRgb", {
         ...monitorState.settings.colorRgb,
         g: value,
       });
       if (monitorState.settings.colorPreset !== "custom") {
-        monitorState.updateSetting("colorPreset", "custom");
+        await monitorState.updateSetting("colorPreset", "custom");
       }
     } catch (e) {
       uiState.showToast(String(e), "error");
@@ -62,12 +62,12 @@
     try {
       const { r, g } = monitorState.settings.colorRgb;
       await setColorRgb(monitorId, r, g, value);
-      monitorState.updateSetting("colorRgb", {
+      await monitorState.updateSetting("colorRgb", {
         ...monitorState.settings.colorRgb,
         b: value,
       });
       if (monitorState.settings.colorPreset !== "custom") {
-        monitorState.updateSetting("colorPreset", "custom");
+        await monitorState.updateSetting("colorPreset", "custom");
       }
     } catch (e) {
       uiState.showToast(String(e), "error");

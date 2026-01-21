@@ -5,6 +5,7 @@ use thiserror::Error;
 
 /// Application-level errors
 #[derive(Debug, Error)]
+#[allow(dead_code)]
 pub enum MsigdError {
     #[error("Failed to execute msigd: {0}")]
     ExecutionFailed(String),

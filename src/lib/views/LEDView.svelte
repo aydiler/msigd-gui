@@ -5,10 +5,6 @@
   import { setMysticLight } from "../api/monitor";
   import type { MysticLightMode } from "../types";
 
-  let ledMode: MysticLightMode = $state("off");
-  let ledColor: string = $state("#ff0000");
-  let ledColor2: string = $state("#0000ff");
-
   // msigd supported modes: off, static, breathing, blinking, flashing, blinds, meteor, rainbow, random
   const modes: { value: MysticLightMode; label: string }[] = [
     { value: "off", label: "Off" },
@@ -29,6 +25,9 @@
   }
 
   function buildMysticConfig(): string {
+    if (!monitorState.settings) return "0:off:0x000000";
+
+    const { ledMode, ledColor, ledColor2 } = monitorState.settings;
     // msigd format: ledgroup:mode:colors
     // ledgroup is 0 or 1
     // colors are comma-separated in 0xRRGGBB format
@@ -59,7 +58,7 @@
 
   async function applyLedSettings() {
     const monitorId = monitorState.selectedId;
-    if (!monitorId) return;
+    if (!monitorId || !monitorState.settings) return;
 
     try {
       const config = buildMysticConfig();
@@ -70,18 +69,31 @@
     }
   }
 
-  function handleModeChange(value: string) {
-    ledMode = value as MysticLightMode;
+  async function handleModeChange(value: string) {
+    await monitorState.updateSetting("ledMode", value as MysticLightMode);
+  }
+
+  async function handleColorChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    await monitorState.updateSetting("ledColor", target.value);
+  }
+
+  async function handleColor2Change(event: Event) {
+    const target = event.target as HTMLInputElement;
+    await monitorState.updateSetting("ledColor2", target.value);
   }
 
   // Check if current mode supports colors
   const showColorPicker = $derived(
-    ledMode !== "off" && ledMode !== "rainbow" && ledMode !== "random"
+    monitorState.settings?.ledMode !== "off" &&
+    monitorState.settings?.ledMode !== "rainbow" &&
+    monitorState.settings?.ledMode !== "random"
   );
 
   // Check if current mode supports second color
   const showSecondColor = $derived(
-    ledMode === "breathing" || ledMode === "blinking"
+    monitorState.settings?.ledMode === "breathing" ||
+    monitorState.settings?.ledMode === "blinking"
   );
 </script>
 
@@ -93,7 +105,7 @@
       <h3>Mystic Light</h3>
       <Select
         label="LED Mode"
-        value={ledMode}
+        value={monitorState.settings.ledMode}
         options={modes}
         onchange={handleModeChange}
       />
@@ -105,7 +117,7 @@
         <div class="color-picker-row">
           <label class="color-label">
             <span>Primary Color</span>
-            <input type="color" bind:value={ledColor} class="color-input" data-testid="led-color-primary" />
+            <input type="color" value={monitorState.settings.ledColor} onchange={handleColorChange} class="color-input" data-testid="led-color-primary" />
           </label>
         </div>
 
@@ -113,7 +125,7 @@
           <div class="color-picker-row">
             <label class="color-label">
               <span>Secondary Color</span>
-              <input type="color" bind:value={ledColor2} class="color-input" data-testid="led-color-secondary" />
+              <input type="color" value={monitorState.settings.ledColor2} onchange={handleColor2Change} class="color-input" data-testid="led-color-secondary" />
             </label>
           </div>
         {/if}

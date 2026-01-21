@@ -80,6 +80,7 @@ pub struct ColorRgb {
     pub b: u8,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MysticLightConfig {
@@ -88,6 +89,7 @@ pub struct MysticLightConfig {
     pub colors: Vec<String>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum MysticLightMode {

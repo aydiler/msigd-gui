@@ -79,6 +79,30 @@ describe('MSI Monitor Control - Interactive Tests', () => {
     return value;
   }
 
+  /**
+   * Helper to assert no error toast is displayed
+   * Call this after any action that triggers an API call
+   */
+  async function assertNoErrorToast(): Promise<void> {
+    await browser.pause(300); // Wait for potential toast to appear
+    const errorToast = await $('[data-testid="toast-error"]');
+    const exists = await errorToast.isExisting();
+    if (exists) {
+      const message = await errorToast.getText();
+      throw new Error(`Unexpected error toast: "${message}"`);
+    }
+  }
+
+  /**
+   * Helper to clear any existing toast
+   */
+  async function clearToast(): Promise<void> {
+    await browser.execute(() => {
+      const toast = document.querySelector('[data-testid^="toast-"]');
+      if (toast) toast.remove();
+    });
+  }
+
   // ============================================================
   // Display View - Slider Interactions
   // ============================================================
@@ -97,6 +121,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       const newValue = initialValue === 50 ? 75 : 50;
 
       await setSliderValue('brightness', newValue);
+      await assertNoErrorToast(); // Verify no msigd error
 
       const updatedValue = await getSliderValue('brightness');
       expect(updatedValue).toBe(newValue);
@@ -115,6 +140,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       const newValue = initialValue === 50 ? 70 : 50;
 
       await setSliderValue('contrast', newValue);
+      await assertNoErrorToast(); // Verify no msigd error
 
       const updatedValue = await getSliderValue('contrast');
       expect(updatedValue).toBe(newValue);
@@ -127,6 +153,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       // Test each valid value
       for (const testValue of [0, 2, 5]) {
         await setSliderValue('sharpness', testValue);
+        await assertNoErrorToast(); // Verify no msigd error
 
         const value = await getSliderValue('sharpness');
         expect(value).toBe(testValue);
@@ -141,6 +168,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       for (const option of options) {
         await select.selectByAttribute('value', option);
         await browser.pause(300);
+        await assertNoErrorToast(); // Verify no msigd error
 
         const selectedValue = await select.getValue();
         expect(selectedValue).toBe(option);
@@ -165,21 +193,18 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       // Click to toggle
       await toggle.click();
       await browser.pause(500);
+      await assertNoErrorToast(); // Verify no msigd error
 
-      // Note: If no monitor connected, API call may fail and state may revert
-      // Test that toggle is functional (clickable) rather than expecting specific state
       const afterFirstClick = await getToggleState();
+      expect(afterFirstClick).not.toBe(initialState); // State should have changed
 
-      // Only verify state changed if API call succeeded (state is different)
-      if (afterFirstClick !== initialState) {
-        // Click again to revert
-        await toggle.click();
-        await browser.pause(500);
+      // Click again to revert
+      await toggle.click();
+      await browser.pause(500);
+      await assertNoErrorToast(); // Verify no msigd error
 
-        const afterSecondClick = await getToggleState();
-        expect(afterSecondClick).toBe(initialState);
-      }
-      // If state didn't change, toggle is still functional (API may have failed)
+      const afterSecondClick = await getToggleState();
+      expect(afterSecondClick).toBe(initialState);
     });
   });
 
@@ -201,6 +226,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       for (const preset of presets) {
         await select.selectByAttribute('value', preset);
         await browser.pause(300);
+        await assertNoErrorToast(); // Verify no msigd error
 
         const selectedValue = await select.getValue();
         expect(selectedValue).toBe(preset);
@@ -212,6 +238,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       if (!(await input.isExisting())) return;
 
       await setSliderValue('red', 80);
+      await assertNoErrorToast(); // Verify no msigd error
 
       const value = await getSliderValue('red');
       expect(value).toBe(80);
@@ -222,6 +249,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       if (!(await input.isExisting())) return;
 
       await setSliderValue('green', 60);
+      await assertNoErrorToast(); // Verify no msigd error
 
       const value = await getSliderValue('green');
       expect(value).toBe(60);
@@ -232,6 +260,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       if (!(await input.isExisting())) return;
 
       await setSliderValue('blue', 40);
+      await assertNoErrorToast(); // Verify no msigd error
 
       const value = await getSliderValue('blue');
       expect(value).toBe(40);
@@ -250,14 +279,13 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       expect(presetBeforeAdjust).toBe('normal');
 
       // Adjust RGB slider - this should trigger the preset to change to 'custom'
-      // Note: This only works if the API call succeeds (monitor connected)
       await setSliderValue('red', 90);
       await browser.pause(500); // Wait for debounce and API call
+      await assertNoErrorToast(); // Verify no msigd error
 
-      // Check if preset changed - may not change if no monitor connected
+      // Check if preset changed to custom
       const currentPreset = await presetSelect.getValue();
-      // Test passes if preset is either 'custom' (API succeeded) or 'normal' (API failed)
-      expect(['custom', 'normal']).toContain(currentPreset);
+      expect(currentPreset).toBe('custom');
     });
   });
 
@@ -337,6 +365,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       // Click the button
       await button.click();
       await browser.pause(500);
+      await assertNoErrorToast(); // Verify no msigd error
 
       // Button should still exist and be clickable after action
       expect(await button.isExisting()).toBe(true);
@@ -363,6 +392,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       const button = await $('[data-testid="apply-led-button"]');
       await button.click();
       await browser.pause(500);
+      await assertNoErrorToast(); // Verify no msigd error
 
       // Verify colors persisted
       const primary = await getColorValue('led-color-primary');
@@ -390,6 +420,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
       for (const option of options) {
         await select.selectByAttribute('value', option);
         await browser.pause(300);
+        await assertNoErrorToast(); // Verify no msigd error
 
         const selectedValue = await select.getValue();
         expect(selectedValue).toBe(option);
@@ -410,12 +441,21 @@ describe('MSI Monitor Control - Interactive Tests', () => {
 
       const initialState = await getToggleState();
 
-      // Toggle - state may or may not change depending on API success
+      // Toggle on
       await toggle.click();
       await browser.pause(500);
+      await assertNoErrorToast(); // Verify no msigd error
 
-      // Verify toggle is still functional after click
-      expect(await toggle.isExisting()).toBe(true);
+      const afterFirstClick = await getToggleState();
+      expect(afterFirstClick).not.toBe(initialState);
+
+      // Toggle off
+      await toggle.click();
+      await browser.pause(500);
+      await assertNoErrorToast(); // Verify no msigd error
+
+      const afterSecondClick = await getToggleState();
+      expect(afterSecondClick).toBe(initialState);
     });
 
     it('should toggle refresh rate display on and off', async () => {
@@ -432,12 +472,21 @@ describe('MSI Monitor Control - Interactive Tests', () => {
 
       const initialState = await getToggleState();
 
-      // Toggle - state may or may not change depending on API success
+      // Toggle on
       await toggle.click();
       await browser.pause(500);
+      await assertNoErrorToast(); // Verify no msigd error
 
-      // Verify toggle is still functional after click
-      expect(await toggle.isExisting()).toBe(true);
+      const afterFirstClick = await getToggleState();
+      expect(afterFirstClick).not.toBe(initialState);
+
+      // Toggle off
+      await toggle.click();
+      await browser.pause(500);
+      await assertNoErrorToast(); // Verify no msigd error
+
+      const afterSecondClick = await getToggleState();
+      expect(afterSecondClick).toBe(initialState);
     });
 
     it('should display monitor information correctly', async () => {
@@ -487,6 +536,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
         await browser.pause(50); // Short delay between changes
       }
       await browser.pause(500); // Wait for final debounce
+      await assertNoErrorToast(); // Verify no msigd error after rapid changes
 
       // Final value should be the last one set
       const finalValue = await getSliderValue('brightness');
@@ -504,6 +554,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
 
       await setSliderValue('brightness', 55);
       await browser.pause(300);
+      await assertNoErrorToast(); // Verify no msigd error
 
       // Switch to Color tab
       const colorTab = await $('[data-testid="tab-color"]');
@@ -561,6 +612,7 @@ describe('MSI Monitor Control - Interactive Tests', () => {
         // Select it
         await select.selectByAttribute('value', value);
         await browser.pause(500);
+        await assertNoErrorToast(); // Verify no msigd error
 
         // Verify selection changed
         const selectedValue = await select.getValue();

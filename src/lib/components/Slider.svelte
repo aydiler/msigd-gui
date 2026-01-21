@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
+
   interface Props {
     label: string;
     value: number;
@@ -21,18 +23,31 @@
     onchange,
   }: Props = $props();
 
-  let debounceTimer: ReturnType<typeof setTimeout>;
+  let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+  let pendingValue: number | null = null;
 
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
     value = parseInt(target.value, 10);
+    pendingValue = value;
 
     // Debounce to avoid flooding msigd with commands
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
       onchange?.(value);
+      pendingValue = null;
     }, 150);
   }
+
+  // Flush pending value on component destroy (e.g., tab switch)
+  onDestroy(() => {
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+      if (pendingValue !== null) {
+        onchange?.(pendingValue);
+      }
+    }
+  });
 </script>
 
 <div class="slider-container" data-testid="slider-{label.toLowerCase().replace(/\s+/g, '-')}">

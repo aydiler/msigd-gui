@@ -15,8 +15,15 @@
     { id: "advanced", label: "Advanced" },
   ];
 
-  onMount(() => {
-    monitorState.loadMonitors();
+  onMount(async () => {
+    // Initialize from persisted state first (instant UI)
+    await Promise.all([
+      monitorState.initialize(),
+      uiState.initialize(),
+    ]);
+
+    // Then load actual monitor data from hardware
+    await monitorState.loadMonitors();
   });
 
   function handleMonitorChange(event: Event) {
@@ -28,7 +35,12 @@
 <main class="app" data-testid="app">
   <!-- Header -->
   <header class="header" data-testid="header">
-    <h1 data-testid="app-title">MSI Monitor Control</h1>
+    <div class="header-title">
+      <h1 data-testid="app-title">MSI Monitor Control</h1>
+      {#if monitorState.isFromCache && monitorState.loading}
+        <span class="cache-indicator" data-testid="cache-indicator">Refreshing...</span>
+      {/if}
+    </div>
 
     <select
       class="monitor-select"
@@ -98,7 +110,11 @@
 
   <!-- Toast notifications -->
   {#if uiState.toast}
-    <div class="toast" class:error={uiState.toast.type === "error"}>
+    <div
+      class="toast"
+      class:error={uiState.toast.type === "error"}
+      data-testid="toast-{uiState.toast.type}"
+    >
       {uiState.toast.message}
     </div>
   {/if}
@@ -134,11 +150,23 @@
     border-bottom: 1px solid #374151;
   }
 
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
   h1 {
     font-size: 1rem;
     font-weight: 600;
     margin: 0;
     color: #f9fafb;
+  }
+
+  .cache-indicator {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    font-weight: 400;
   }
 
   .monitor-select {

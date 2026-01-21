@@ -14,7 +14,7 @@
     if (!monitorId) return;
     try {
       await setImageEnhancement(monitorId, value);
-      monitorState.updateSetting(
+      await monitorState.updateSetting(
         "imageEnhancement",
         value as "off" | "weak" | "medium" | "strong" | "strongest"
       );
@@ -28,7 +28,7 @@
     if (!monitorId) return;
     try {
       await setHdcr(monitorId, enabled);
-      monitorState.updateSetting("hdcr", enabled);
+      await monitorState.updateSetting("hdcr", enabled);
     } catch (e) {
       uiState.showToast(String(e), "error");
     }
@@ -39,7 +39,7 @@
     if (!monitorId) return;
     try {
       await setRefreshRateDisplay(monitorId, enabled);
-      monitorState.updateSetting("refreshRateDisplay", enabled);
+      await monitorState.updateSetting("refreshRateDisplay", enabled);
     } catch (e) {
       uiState.showToast(String(e), "error");
     }

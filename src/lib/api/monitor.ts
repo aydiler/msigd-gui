@@ -1,6 +1,6 @@
 // Tauri API bindings for monitor commands
 
-import type { Monitor, MonitorSettings } from "../types";
+import type { Monitor, MonitorSettings, MysticLightMode } from "../types";
 
 // Use global Tauri API if available, fallback to import
 async function invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T> {
@@ -26,11 +26,22 @@ export async function listMonitors(): Promise<Monitor[]> {
 
 /**
  * Get settings for a specific monitor
+ * Note: LED settings are not queryable from hardware, so defaults are added
  */
 export async function getMonitorSettings(
   monitorId: string
 ): Promise<MonitorSettings> {
-  return invoke("get_monitor_settings", { monitorId });
+  const settings = await invoke<Omit<MonitorSettings, "ledMode" | "ledColor" | "ledColor2">>(
+    "get_monitor_settings",
+    { monitorId }
+  );
+  // Add default LED values (not queryable from hardware)
+  return {
+    ...settings,
+    ledMode: "off",
+    ledColor: "#ff0000",
+    ledColor2: "#0000ff",
+  };
 }
 
 /**
@@ -88,4 +99,66 @@ export async function setEyeSaver(
  */
 export async function checkMsigdAvailable(): Promise<boolean> {
   return invoke("check_msigd_available");
+}
+
+/**
+ * Set color preset (cool, normal, warm, custom)
+ */
+export async function setColorPreset(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_color_preset", { monitorId, value });
+}
+
+/**
+ * Set color RGB values (0-100 each)
+ */
+export async function setColorRgb(
+  monitorId: string,
+  r: number,
+  g: number,
+  b: number
+): Promise<void> {
+  return invoke("set_color_rgb", { monitorId, r, g, b });
+}
+
+/**
+ * Set image enhancement mode
+ */
+export async function setImageEnhancement(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_image_enhancement", { monitorId, value });
+}
+
+/**
+ * Set HDCR (High Dynamic Contrast Ratio)
+ */
+export async function setHdcr(
+  monitorId: string,
+  enabled: boolean
+): Promise<void> {
+  return invoke("set_hdcr", { monitorId, enabled });
+}
+
+/**
+ * Set refresh rate display
+ */
+export async function setRefreshRateDisplay(
+  monitorId: string,
+  enabled: boolean
+): Promise<void> {
+  return invoke("set_refresh_rate_display", { monitorId, enabled });
+}
+
+/**
+ * Set Mystic Light LED configuration
+ */
+export async function setMysticLight(
+  monitorId: string,
+  config: string
+): Promise<void> {
+  return invoke("set_mystic_light", { monitorId, config });
 }

@@ -18,6 +18,10 @@ export interface MonitorSettings {
   colorRgb: { r: number; g: number; b: number };
   hdcr: boolean;
   refreshRateDisplay: boolean;
+  // LED settings (frontend-only, not queryable from hardware)
+  ledMode: MysticLightMode;
+  ledColor: string;  // hex #RRGGBB
+  ledColor2: string; // hex #RRGGBB
 }
 
 export interface MysticLightConfig {

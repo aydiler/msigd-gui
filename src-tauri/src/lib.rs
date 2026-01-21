@@ -5,16 +5,19 @@ mod error;
 mod msigd;
 
 use commands::monitor;
-use tauri::{webview::WebviewWindowBuilder, WebviewUrl};
 
 /// Run the Tauri application
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let port: u16 = 9527;
+    // Force X11 backend and configure WebKit for better compatibility
+    #[cfg(target_os = "linux")]
+    {
+        std::env::set_var("GDK_BACKEND", "x11");
+        std::env::set_var("WEBKIT_DISABLE_COMPOSITING_MODE", "1");
+    }
 
     tauri::Builder::default()
-        // Use localhost plugin to serve assets via HTTP (fixes WebKitGTK issues on Linux)
-        .plugin(tauri_plugin_localhost::Builder::new(port).build())
+        .plugin(tauri_plugin_store::Builder::new().build())
         // Register all command handlers
         .invoke_handler(tauri::generate_handler![
             // Monitor commands
@@ -26,18 +29,16 @@ pub fn run() {
             monitor::set_response_time,
             monitor::set_eye_saver,
             monitor::check_msigd_available,
+            // Color commands
+            monitor::set_color_preset,
+            monitor::set_color_rgb,
+            // Advanced commands
+            monitor::set_image_enhancement,
+            monitor::set_hdcr,
+            monitor::set_refresh_rate_display,
+            // LED commands
+            monitor::set_mystic_light,
         ])
-        .setup(move |app| {
-            let url = format!("http://localhost:{}/index.html", port).parse().unwrap();
-            WebviewWindowBuilder::new(app, "main", WebviewUrl::External(url))
-                .title("MSI Monitor Control")
-                .inner_size(480.0, 680.0)
-                .min_inner_size(400.0, 500.0)
-                .resizable(true)
-                .center()
-                .build()?;
-            Ok(())
-        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

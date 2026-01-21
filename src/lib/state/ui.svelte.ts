@@ -1,6 +1,7 @@
 // Svelte 5 reactive state for UI
 
 import type { Tab } from "../types";
+import { loadPersistedState, savePersistedState } from "../api/store";
 
 /**
  * UI state using Svelte 5 $state rune
@@ -10,6 +11,18 @@ class UIState {
   toast = $state<{ message: string; type: "success" | "error" } | null>(null);
 
   private toastTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  /**
+   * Initialize state from persisted storage
+   */
+  async initialize(): Promise<void> {
+    try {
+      const persisted = await loadPersistedState();
+      this.activeTab = persisted.activeTab;
+    } catch (e) {
+      console.error("Failed to initialize UI state:", e);
+    }
+  }
 
   showToast(message: string, type: "success" | "error" = "success") {
     // Clear existing timeout
@@ -34,8 +47,11 @@ class UIState {
     this.toast = null;
   }
 
-  setTab(tab: Tab) {
+  async setTab(tab: Tab): Promise<void> {
     this.activeTab = tab;
+
+    // Persist tab change
+    await savePersistedState({ activeTab: tab });
   }
 }
 
