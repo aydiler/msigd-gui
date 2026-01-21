@@ -4,15 +4,19 @@
   import { uiState } from "./lib/state/ui.svelte";
   import DisplayView from "./lib/views/DisplayView.svelte";
   import ColorView from "./lib/views/ColorView.svelte";
+  import PerformanceView from "./lib/views/PerformanceView.svelte";
+  import OSDView from "./lib/views/OSDView.svelte";
+  import InputView from "./lib/views/InputView.svelte";
   import LEDView from "./lib/views/LEDView.svelte";
-  import AdvancedView from "./lib/views/AdvancedView.svelte";
   import type { Tab } from "./lib/types";
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "display", label: "Display" },
     { id: "color", label: "Color" },
+    { id: "performance", label: "Performance" },
+    { id: "osd", label: "OSD" },
+    { id: "input", label: "Input" },
     { id: "led", label: "LED" },
-    { id: "advanced", label: "Advanced" },
   ];
 
   onMount(async () => {
@@ -101,10 +105,14 @@
       <DisplayView />
     {:else if uiState.activeTab === "color"}
       <ColorView />
+    {:else if uiState.activeTab === "performance"}
+      <PerformanceView />
+    {:else if uiState.activeTab === "osd"}
+      <OSDView />
+    {:else if uiState.activeTab === "input"}
+      <InputView />
     {:else if uiState.activeTab === "led"}
       <LEDView />
-    {:else if uiState.activeTab === "advanced"}
-      <AdvancedView />
     {/if}
   </div>
 

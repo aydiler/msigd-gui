@@ -3,7 +3,14 @@
   import Select from "../components/Select.svelte";
   import { monitorState } from "../state/monitors.svelte";
   import { uiState } from "../state/ui.svelte";
-  import { setColorPreset, setColorRgb } from "../api/monitor";
+  import {
+    setColorPreset,
+    setColorRgb,
+    setNightVision,
+    setBlackTuner,
+    setImageEnhancement,
+  } from "../api/monitor";
+  import type { NightVision } from "../types";
 
   async function handleColorPreset(value: string) {
     const monitorId = monitorState.selectedId;
@@ -73,6 +80,42 @@
       uiState.showToast(String(e), "error");
     }
   }
+
+  async function handleNightVision(value: string) {
+    const monitorId = monitorState.selectedId;
+    if (!monitorId) return;
+    try {
+      await setNightVision(monitorId, value);
+      await monitorState.updateSetting("nightVision", value as NightVision);
+    } catch (e) {
+      uiState.showToast(String(e), "error");
+    }
+  }
+
+  async function handleBlackTuner(value: number) {
+    const monitorId = monitorState.selectedId;
+    if (!monitorId) return;
+    try {
+      await setBlackTuner(monitorId, value);
+      await monitorState.updateSetting("blackTuner", value);
+    } catch (e) {
+      uiState.showToast(String(e), "error");
+    }
+  }
+
+  async function handleImageEnhancement(value: string) {
+    const monitorId = monitorState.selectedId;
+    if (!monitorId) return;
+    try {
+      await setImageEnhancement(monitorId, value);
+      await monitorState.updateSetting(
+        "imageEnhancement",
+        value as "off" | "weak" | "medium" | "strong" | "strongest"
+      );
+    } catch (e) {
+      uiState.showToast(String(e), "error");
+    }
+  }
 </script>
 
 <div class="color-view" data-testid="view-color">
@@ -122,6 +165,43 @@
           onchange={handleColorB}
         />
       </div>
+    </div>
+
+    <div class="settings-group">
+      <h3>Image Enhancement</h3>
+      <Select
+        label="Night Vision"
+        value={monitorState.settings.nightVision}
+        options={[
+          { value: "off", label: "Off" },
+          { value: "normal", label: "Normal" },
+          { value: "strong", label: "Strong" },
+          { value: "strongest", label: "Strongest" },
+          { value: "ai", label: "AI" },
+        ]}
+        onchange={handleNightVision}
+      />
+
+      <Slider
+        label="Black Tuner"
+        bind:value={monitorState.settings.blackTuner}
+        min={0}
+        max={20}
+        onchange={handleBlackTuner}
+      />
+
+      <Select
+        label="Image Enhancement"
+        value={monitorState.settings.imageEnhancement}
+        options={[
+          { value: "off", label: "Off" },
+          { value: "weak", label: "Weak" },
+          { value: "medium", label: "Medium" },
+          { value: "strong", label: "Strong" },
+          { value: "strongest", label: "Strongest" },
+        ]}
+        onchange={handleImageEnhancement}
+      />
     </div>
   {:else}
     <div class="no-monitor">

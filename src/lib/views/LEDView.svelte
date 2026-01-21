@@ -1,8 +1,9 @@
 <script lang="ts">
   import Select from "../components/Select.svelte";
+  import Toggle from "../components/Toggle.svelte";
   import { monitorState } from "../state/monitors.svelte";
   import { uiState } from "../state/ui.svelte";
-  import { setMysticLight } from "../api/monitor";
+  import { setMysticLight, setRgbLed } from "../api/monitor";
   import type { MysticLightMode } from "../types";
 
   // msigd supported modes: off, static, breathing, blinking, flashing, blinds, meteor, rainbow, random
@@ -95,12 +96,32 @@
     monitorState.settings?.ledMode === "breathing" ||
     monitorState.settings?.ledMode === "blinking"
   );
+
+  async function handleRgbLed(enabled: boolean) {
+    const monitorId = monitorState.selectedId;
+    if (!monitorId) return;
+    try {
+      await setRgbLed(monitorId, enabled);
+      await monitorState.updateSetting("rgbLed", enabled);
+    } catch (e) {
+      uiState.showToast(String(e), "error");
+    }
+  }
 </script>
 
 <div class="led-view" data-testid="view-led">
   {#if monitorState.loading}
     <div class="loading" data-testid="loading">Loading settings...</div>
   {:else if monitorState.settings}
+    <div class="settings-group">
+      <h3>RGB LED</h3>
+      <Toggle
+        label="RGB LED Enable"
+        bind:checked={monitorState.settings.rgbLed}
+        onchange={handleRgbLed}
+      />
+    </div>
+
     <div class="settings-group">
       <h3>Mystic Light</h3>
       <Select

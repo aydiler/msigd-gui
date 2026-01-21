@@ -10,7 +10,10 @@
     setSharpness,
     setResponseTime,
     setEyeSaver,
+    setZeroLatency,
+    setScreenSize,
   } from "../api/monitor";
+  import type { ScreenSize } from "../types";
 
   async function handleBrightness(value: number) {
     const monitorId = monitorState.selectedId;
@@ -69,6 +72,28 @@
       uiState.showToast(String(e), "error");
     }
   }
+
+  async function handleZeroLatency(enabled: boolean) {
+    const monitorId = monitorState.selectedId;
+    if (!monitorId) return;
+    try {
+      await setZeroLatency(monitorId, enabled);
+      await monitorState.updateSetting("zeroLatency", enabled);
+    } catch (e) {
+      uiState.showToast(String(e), "error");
+    }
+  }
+
+  async function handleScreenSize(value: string) {
+    const monitorId = monitorState.selectedId;
+    if (!monitorId) return;
+    try {
+      await setScreenSize(monitorId, value);
+      await monitorState.updateSetting("screenSize", value as ScreenSize);
+    } catch (e) {
+      uiState.showToast(String(e), "error");
+    }
+  }
 </script>
 
 <div class="display-view" data-testid="view-display">
@@ -105,6 +130,24 @@
     </div>
 
     <div class="settings-group">
+      <h3>Screen</h3>
+      <Select
+        label="Screen Size"
+        value={monitorState.settings.screenSize}
+        options={[
+          { value: "auto", label: "Auto" },
+          { value: "4:3", label: "4:3" },
+          { value: "16:9", label: "16:9" },
+          { value: "21:9", label: "21:9" },
+          { value: "1:1", label: "1:1" },
+          { value: "19", label: "19 inch" },
+          { value: "24", label: "24 inch" },
+        ]}
+        onchange={handleScreenSize}
+      />
+    </div>
+
+    <div class="settings-group">
       <h3>Performance</h3>
       <Select
         label="Response Time"
@@ -115,6 +158,12 @@
           { value: "fastest", label: "Fastest" },
         ]}
         onchange={handleResponseTime}
+      />
+
+      <Toggle
+        label="Zero Latency"
+        bind:checked={monitorState.settings.zeroLatency}
+        onchange={handleZeroLatency}
       />
     </div>
 

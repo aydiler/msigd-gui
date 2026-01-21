@@ -162,3 +162,231 @@ export async function setMysticLight(
 ): Promise<void> {
   return invoke("set_mystic_light", { monitorId, config });
 }
+
+// Phase 1: OSD Settings
+
+/**
+ * Set OSD transparency (0-5)
+ */
+export async function setOsdTransparency(
+  monitorId: string,
+  value: number
+): Promise<void> {
+  return invoke("set_osd_transparency", { monitorId, value });
+}
+
+/**
+ * Set OSD timeout (0-30 seconds)
+ */
+export async function setOsdTimeout(
+  monitorId: string,
+  value: number
+): Promise<void> {
+  return invoke("set_osd_timeout", { monitorId, value });
+}
+
+// Phase 2: MAG Core Settings
+
+/**
+ * Set night vision mode
+ */
+export async function setNightVision(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_night_vision", { monitorId, value });
+}
+
+/**
+ * Set black tuner (0-20)
+ */
+export async function setBlackTuner(
+  monitorId: string,
+  value: number
+): Promise<void> {
+  return invoke("set_black_tuner", { monitorId, value });
+}
+
+/**
+ * Set screen assistance (crosshair)
+ */
+export async function setScreenAssistance(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_screen_assistance", { monitorId, value });
+}
+
+/**
+ * Set refresh rate display position
+ */
+export async function setRefreshPosition(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_refresh_position", { monitorId, value });
+}
+
+/**
+ * Set alarm clock timer
+ */
+export async function setAlarmClock(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_alarm_clock", { monitorId, value });
+}
+
+/**
+ * Set alarm clock position
+ */
+export async function setAlarmPosition(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_alarm_position", { monitorId, value });
+}
+
+/**
+ * Set sound enable
+ */
+export async function setSoundEnable(
+  monitorId: string,
+  enabled: boolean
+): Promise<void> {
+  return invoke("set_sound_enable", { monitorId, enabled });
+}
+
+// Phase 3: Performance Settings
+
+/**
+ * Set zero latency mode
+ */
+export async function setZeroLatency(
+  monitorId: string,
+  enabled: boolean
+): Promise<void> {
+  return invoke("set_zero_latency", { monitorId, enabled });
+}
+
+/**
+ * Set FreeSync
+ */
+export async function setFreeSync(
+  monitorId: string,
+  enabled: boolean
+): Promise<void> {
+  return invoke("set_free_sync", { monitorId, enabled });
+}
+
+/**
+ * Set game mode
+ */
+export async function setGameMode(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_game_mode", { monitorId, value });
+}
+
+/**
+ * Set pro mode
+ */
+export async function setProMode(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_pro_mode", { monitorId, value });
+}
+
+// Phase 4: Input/System Settings
+
+/**
+ * Set input source
+ */
+export async function setInput(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_input", { monitorId, value });
+}
+
+/**
+ * Set auto scan
+ */
+export async function setAutoScan(
+  monitorId: string,
+  enabled: boolean
+): Promise<void> {
+  return invoke("set_auto_scan", { monitorId, enabled });
+}
+
+/**
+ * Set screen info display
+ */
+export async function setScreenInfo(
+  monitorId: string,
+  enabled: boolean
+): Promise<void> {
+  return invoke("set_screen_info", { monitorId, enabled });
+}
+
+/**
+ * Set screen size
+ */
+export async function setScreenSize(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_screen_size", { monitorId, value });
+}
+
+/**
+ * Set power button behavior
+ */
+export async function setPowerButton(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_power_button", { monitorId, value });
+}
+
+/**
+ * Set HDMI CEC
+ */
+export async function setHdmiCec(
+  monitorId: string,
+  enabled: boolean
+): Promise<void> {
+  return invoke("set_hdmi_cec", { monitorId, enabled });
+}
+
+/**
+ * Set KVM mode
+ */
+export async function setKvm(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_kvm", { monitorId, value });
+}
+
+/**
+ * Set audio source
+ */
+export async function setAudioSource(
+  monitorId: string,
+  value: string
+): Promise<void> {
+  return invoke("set_audio_source", { monitorId, value });
+}
+
+/**
+ * Set RGB LED
+ */
+export async function setRgbLed(
+  monitorId: string,
+  enabled: boolean
+): Promise<void> {
+  return invoke("set_rgb_led", { monitorId, enabled });
+}

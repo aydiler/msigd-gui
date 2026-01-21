@@ -75,6 +75,35 @@ impl MsigdParser {
             hdcr: Self::parse_bool(&values, "hdcr").unwrap_or(false),
             // msigd outputs "refresh_display" not "refresh_rate_display"
             refresh_rate_display: Self::parse_bool(&values, "refresh_display").unwrap_or(false),
+            // Phase 1: OSD settings
+            osd_transparency: Self::parse_u8(&values, "osd_transparency").unwrap_or(0),
+            osd_timeout: Self::parse_u8(&values, "osd_timeout").unwrap_or(20),
+            // Phase 2: MAG Core settings
+            night_vision: Self::parse_night_vision(&values).unwrap_or(NightVision::Off),
+            black_tuner: Self::parse_u8(&values, "black_tuner").unwrap_or(10),
+            screen_assistance: Self::parse_screen_assistance(&values)
+                .unwrap_or(ScreenAssistance::Off),
+            refresh_position: Self::parse_position(&values, "refresh_position")
+                .unwrap_or(Position::LeftTop),
+            alarm_clock: Self::parse_alarm_clock(&values).unwrap_or(AlarmClock::Off),
+            alarm_position: Self::parse_position(&values, "alarm_position")
+                .unwrap_or(Position::LeftTop),
+            sound_enable: Self::parse_bool(&values, "sound_enable").unwrap_or(true),
+            // Phase 3: Performance settings
+            zero_latency: Self::parse_bool(&values, "zero_latency").unwrap_or(false),
+            free_sync: Self::parse_bool(&values, "free_sync").unwrap_or(false),
+            game_mode: Self::parse_game_mode(&values).unwrap_or(GameMode::User),
+            pro_mode: Self::parse_pro_mode(&values).unwrap_or(ProMode::User),
+            // Phase 4: Input/System settings
+            input: Self::parse_input(&values).unwrap_or(InputSource::Hdmi1),
+            auto_scan: Self::parse_bool(&values, "auto_scan").unwrap_or(true),
+            screen_info: Self::parse_bool(&values, "screen_info").unwrap_or(true),
+            screen_size: Self::parse_screen_size(&values).unwrap_or(ScreenSize::Auto),
+            power_button: Self::parse_power_button(&values).unwrap_or(PowerButton::Off),
+            hdmi_cec: Self::parse_bool(&values, "hdmi_cec").unwrap_or(false),
+            kvm: Self::parse_kvm(&values).unwrap_or(KvmMode::Auto),
+            audio_source: Self::parse_audio_source(&values).unwrap_or(AudioSource::Analog),
+            rgb_led: Self::parse_bool(&values, "rgb_led").unwrap_or(true),
         })
     }
 
@@ -139,6 +168,137 @@ impl MsigdParser {
             } else {
                 None
             }
+        })
+    }
+
+    // Phase 2: MAG Core parsers
+    fn parse_night_vision(values: &HashMap<String, String>) -> Option<NightVision> {
+        values.get("night_vision").and_then(|v| match v.as_str() {
+            "off" | "0" => Some(NightVision::Off),
+            "normal" | "1" => Some(NightVision::Normal),
+            "strong" | "2" => Some(NightVision::Strong),
+            "strongest" | "3" => Some(NightVision::Strongest),
+            "ai" | "4" => Some(NightVision::Ai),
+            _ => None,
+        })
+    }
+
+    fn parse_position(values: &HashMap<String, String>, key: &str) -> Option<Position> {
+        values.get(key).and_then(|v| match v.as_str() {
+            "left_top" | "0" => Some(Position::LeftTop),
+            "right_top" | "1" => Some(Position::RightTop),
+            "left_bottom" | "2" => Some(Position::LeftBottom),
+            "right_bottom" | "3" => Some(Position::RightBottom),
+            _ => None,
+        })
+    }
+
+    fn parse_screen_assistance(values: &HashMap<String, String>) -> Option<ScreenAssistance> {
+        values.get("screen_assistance").and_then(|v| match v.as_str() {
+            "off" | "0" => Some(ScreenAssistance::Off),
+            "red1" | "1" => Some(ScreenAssistance::Red1),
+            "red2" | "2" => Some(ScreenAssistance::Red2),
+            "red3" | "3" => Some(ScreenAssistance::Red3),
+            "red4" | "4" => Some(ScreenAssistance::Red4),
+            "red5" | "5" => Some(ScreenAssistance::Red5),
+            "red6" | "6" => Some(ScreenAssistance::Red6),
+            "white1" | "7" => Some(ScreenAssistance::White1),
+            "white2" | "8" => Some(ScreenAssistance::White2),
+            "white3" | "9" => Some(ScreenAssistance::White3),
+            "white4" | "10" => Some(ScreenAssistance::White4),
+            "white5" | "11" => Some(ScreenAssistance::White5),
+            "white6" | "12" => Some(ScreenAssistance::White6),
+            _ => None,
+        })
+    }
+
+    fn parse_alarm_clock(values: &HashMap<String, String>) -> Option<AlarmClock> {
+        values.get("alarm_clock").and_then(|v| match v.as_str() {
+            "off" | "0" => Some(AlarmClock::Off),
+            "1" => Some(AlarmClock::One),
+            "2" => Some(AlarmClock::Two),
+            "3" => Some(AlarmClock::Three),
+            "4" => Some(AlarmClock::Four),
+            _ => None,
+        })
+    }
+
+    // Phase 3: Performance parsers
+    fn parse_game_mode(values: &HashMap<String, String>) -> Option<GameMode> {
+        values.get("game_mode").and_then(|v| match v.as_str() {
+            "user" | "0" => Some(GameMode::User),
+            "fps" | "1" => Some(GameMode::Fps),
+            "racing" | "2" => Some(GameMode::Racing),
+            "rts" | "3" => Some(GameMode::Rts),
+            "rpg" | "4" => Some(GameMode::Rpg),
+            "premium_color" | "5" => Some(GameMode::PremiumColor),
+            _ => None,
+        })
+    }
+
+    fn parse_pro_mode(values: &HashMap<String, String>) -> Option<ProMode> {
+        values.get("pro_mode").and_then(|v| match v.as_str() {
+            "user" | "0" => Some(ProMode::User),
+            "reader" | "1" => Some(ProMode::Reader),
+            "cinema" | "2" => Some(ProMode::Cinema),
+            "designer" | "3" => Some(ProMode::Designer),
+            "office" | "4" => Some(ProMode::Office),
+            "srgb" | "5" => Some(ProMode::Srgb),
+            "adobe_rgb" | "6" => Some(ProMode::AdobeRgb),
+            "dci_p3" | "7" => Some(ProMode::DciP3),
+            "eco" | "8" => Some(ProMode::Eco),
+            "anti_blue" | "9" => Some(ProMode::AntiBlue),
+            "movie" | "10" => Some(ProMode::Movie),
+            _ => None,
+        })
+    }
+
+    // Phase 4: Input/System parsers
+    fn parse_input(values: &HashMap<String, String>) -> Option<InputSource> {
+        values.get("input").and_then(|v| match v.as_str() {
+            "hdmi1" | "0" => Some(InputSource::Hdmi1),
+            "hdmi2" | "1" => Some(InputSource::Hdmi2),
+            "dp" | "2" => Some(InputSource::Dp),
+            "usbc" | "3" => Some(InputSource::Usbc),
+            _ => None,
+        })
+    }
+
+    fn parse_screen_size(values: &HashMap<String, String>) -> Option<ScreenSize> {
+        values.get("screen_size").and_then(|v| match v.as_str() {
+            "auto" | "0" => Some(ScreenSize::Auto),
+            "4:3" | "1" => Some(ScreenSize::Ratio4x3),
+            "16:9" | "2" => Some(ScreenSize::Ratio16x9),
+            "21:9" | "3" => Some(ScreenSize::Ratio21x9),
+            "1:1" | "4" => Some(ScreenSize::Ratio1x1),
+            "19" | "5" => Some(ScreenSize::Size19),
+            "24" | "6" => Some(ScreenSize::Size24),
+            _ => None,
+        })
+    }
+
+    fn parse_power_button(values: &HashMap<String, String>) -> Option<PowerButton> {
+        values.get("power_button").and_then(|v| match v.as_str() {
+            "off" | "0" => Some(PowerButton::Off),
+            "standby" | "1" => Some(PowerButton::Standby),
+            _ => None,
+        })
+    }
+
+    fn parse_kvm(values: &HashMap<String, String>) -> Option<KvmMode> {
+        values.get("kvm").and_then(|v| match v.as_str() {
+            "auto" | "0" => Some(KvmMode::Auto),
+            "upstream" | "1" => Some(KvmMode::Upstream),
+            "type_c" | "2" => Some(KvmMode::TypeC),
+            _ => None,
+        })
+    }
+
+    fn parse_audio_source(values: &HashMap<String, String>) -> Option<AudioSource> {
+        values.get("audio_source").and_then(|v| match v.as_str() {
+            "analog" | "0" => Some(AudioSource::Analog),
+            "digital" | "1" => Some(AudioSource::Digital),
+            _ => None,
         })
     }
 }
