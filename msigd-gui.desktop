@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=MSI Monitor Control
+Comment=Control MSI gaming monitor settings
+Exec=env WEBKIT_DISABLE_COMPOSITING_MODE=1 msigd-gui
+Icon=msigd-gui
+Terminal=false
+Type=Application
+Categories=Utility;Settings;HardwareSettings;
+Keywords=monitor;msi;display;brightness;led;mystic;
+StartupNotify=true

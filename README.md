@@ -39,7 +39,7 @@ A modern desktop GUI application for controlling MSI gaming monitors on Linux. B
 
 ### Prerequisites
 
-**Install msigd:**
+**1. Install msigd CLI tool:**
 ```bash
 git clone https://github.com/couriersud/msigd.git
 cd msigd
@@ -47,12 +47,29 @@ make
 sudo make install
 ```
 
-**System dependencies (Arch Linux):**
+**2. Set up udev rules** (for USB access without root):
 ```bash
-sudo pacman -S webkit2gtk-4.1 base-devel curl wget openssl
+sudo cp 99-msigd.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules
 ```
 
-### Build from Source
+**3. System dependencies:**
+```bash
+# Arch Linux
+sudo pacman -S webkit2gtk-4.1
+
+# Ubuntu/Debian
+sudo apt install libwebkit2gtk-4.1-0 libgtk-3-0
+```
+
+### Option 1: Install from .deb (Debian/Ubuntu)
+
+```bash
+# Download the latest release
+sudo dpkg -i "MSI Monitor Control_1.0.0_amd64.deb"
+```
+
+### Option 2: Install from Source
 
 ```bash
 git clone https://github.com/aydiler/msigd-gui.git
@@ -60,13 +77,24 @@ cd msigd-gui
 npm install
 npm run tauri build
 
-# Binary: src-tauri/target/release/msigd-gui
+# Install system-wide
+sudo ./install.sh
 ```
 
-### Running on Wayland
+### Option 3: Run Without Installing
 
 ```bash
-WEBKIT_DISABLE_COMPOSITING_MODE=1 ./msigd-gui
+# After building, run directly
+./src-tauri/target/release/msigd-gui
+
+# On Wayland, use the launcher script
+./msigd-gui.sh
+```
+
+### Uninstall
+
+```bash
+sudo ./uninstall.sh
 ```
 
 ## Development
