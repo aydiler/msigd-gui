@@ -1,5 +1,5 @@
 name: msigd-gui
-version: '1.1.0'
+version: '1.1.1'
 summary: Control MSI gaming monitors on Linux
 description: |
   A modern desktop GUI application for controlling MSI gaming monitor

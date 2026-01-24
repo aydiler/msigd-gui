@@ -9,9 +9,11 @@ A modern desktop GUI application for controlling MSI gaming monitors on Linux. B
 ## Features
 
 - **Display Settings** - Brightness, contrast, sharpness, response time, eye saver mode
-- **Color Management** - Color temperature presets (Cool/Normal/Warm) and RGB fine-tuning
+- **Color Management** - Color temperature presets and RGB fine-tuning
+- **Performance** - HDCR, FreeSync, game modes, pro modes
+- **OSD Settings** - Transparency, timeout, refresh rate display, screen assistance
+- **Input Control** - Input source, auto scan, HDMI CEC, KVM, audio settings
 - **LED Control** - MSI Mystic Light RGB modes (Static, Breathing, Rainbow, etc.)
-- **Advanced Options** - HDCR, image enhancement, refresh rate OSD
 - **Multi-Monitor Support** - Switch between connected MSI monitors
 - **Settings Persistence** - All settings cached locally and survive app restarts
 
@@ -19,12 +21,16 @@ A modern desktop GUI application for controlling MSI gaming monitors on Linux. B
 
 <table>
   <tr>
-    <td><img src="screenshots/display-tab.png" alt="Display Tab" width="400"/><br/><em>Display - Picture & Performance</em></td>
-    <td><img src="screenshots/color-tab.png" alt="Color Tab" width="400"/><br/><em>Color - Temperature & RGB</em></td>
+    <td><img src="screenshots/display-tab.png" alt="Display Tab" width="400"/><br/><em>Display Settings</em></td>
+    <td><img src="screenshots/color-tab.png" alt="Color Tab" width="400"/><br/><em>Color Management</em></td>
   </tr>
   <tr>
-    <td><img src="screenshots/led-tab.png" alt="LED Tab" width="400"/><br/><em>LED - Mystic Light Control</em></td>
-    <td><img src="screenshots/advanced-tab.png" alt="Advanced Tab" width="400"/><br/><em>Advanced - HDCR & Monitor Info</em></td>
+    <td><img src="screenshots/performance-tab.png" alt="Performance Tab" width="400"/><br/><em>Performance</em></td>
+    <td><img src="screenshots/osd-tab.png" alt="OSD Tab" width="400"/><br/><em>OSD Settings</em></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/input-tab.png" alt="Input Tab" width="400"/><br/><em>Input Control</em></td>
+    <td><img src="screenshots/led-tab.png" alt="LED Tab" width="400"/><br/><em>LED Control</em></td>
   </tr>
 </table>
 
@@ -76,20 +82,14 @@ yay -S msigd-gui-bin
 
 ```bash
 # Download from GitHub releases
-wget https://github.com/aydiler/msigd-gui/releases/download/v1.0.0/MSI.Monitor.Control_1.0.0_amd64.deb
-sudo dpkg -i "MSI Monitor Control_1.0.0_amd64.deb"
+wget https://github.com/aydiler/msigd-gui/releases/download/v1.1.0/MSI.Monitor.Control_1.1.0_amd64.deb
+sudo dpkg -i "MSI.Monitor.Control_1.1.0_amd64.deb"
 ```
 
 ### Snap
 
 ```bash
-# Install from Snap Store (when available)
 sudo snap install msigd-gui
-
-# Or build locally
-cd snap
-snapcraft
-sudo snap install msigd-gui_1.0.0_amd64.snap --dangerous
 ```
 
 ### Build from Source

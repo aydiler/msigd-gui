@@ -1,6 +1,6 @@
 [package]
 name = "msigd-gui"
-version = "1.1.0"
+version = "1.1.1"
 description = "GUI for controlling MSI gaming monitors"
 authors = ["Ahmet"]
 edition = "2021"
