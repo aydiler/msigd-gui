@@ -1,0 +1,75 @@
+name: AUR
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-aur:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AUR_SSH_KEY }}" > ~/.ssh/aur
+          chmod 600 ~/.ssh/aur
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          cat >> ~/.ssh/config << EOF
+          Host aur.archlinux.org
+            IdentityFile ~/.ssh/aur
+            User aur
+          EOF
+
+      - name: Update msigd-gui (source package)
+        run: |
+          git clone ssh://aur@aur.archlinux.org/msigd-gui.git aur-msigd-gui
+          cd aur-msigd-gui
+
+          # Update version
+          sed -i "s/pkgver=.*/pkgver=${{ steps.version.outputs.version }}/" PKGBUILD
+
+          # Generate .SRCINFO
+          docker run --rm -v "$PWD:/pkg" archlinux:latest bash -c "
+            pacman -Sy --noconfirm pacman-contrib
+            chown -R nobody /pkg
+            cd /pkg
+            su nobody -s /bin/bash -c 'makepkg --printsrcinfo > .SRCINFO'
+          "
+
+          # Commit and push
+          git config user.email "aydiler@users.noreply.github.com"
+          git config user.name "aydiler"
+          git add PKGBUILD .SRCINFO
+          git diff --cached --quiet || git commit -m "Update to ${{ steps.version.outputs.version }}"
+          git push
+
+      - name: Update msigd-gui-bin (binary package)
+        run: |
+          git clone ssh://aur@aur.archlinux.org/msigd-gui-bin.git aur-msigd-gui-bin
+          cd aur-msigd-gui-bin
+
+          # Update version in all places
+          sed -i "s/pkgver=.*/pkgver=${{ steps.version.outputs.version }}/" PKGBUILD
+          sed -i "s/1\.[0-9]\+\.[0-9]\+/${{ steps.version.outputs.version }}/g" PKGBUILD
+
+          # Generate .SRCINFO
+          docker run --rm -v "$PWD:/pkg" archlinux:latest bash -c "
+            pacman -Sy --noconfirm pacman-contrib
+            chown -R nobody /pkg
+            cd /pkg
+            su nobody -s /bin/bash -c 'makepkg --printsrcinfo > .SRCINFO'
+          "
+
+          # Commit and push
+          git config user.email "aydiler@users.noreply.github.com"
+          git config user.name "aydiler"
+          git add PKGBUILD .SRCINFO
+          git diff --cached --quiet || git commit -m "Update to ${{ steps.version.outputs.version }}"
+          git push
