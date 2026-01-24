@@ -80,17 +80,6 @@ wget https://github.com/aydiler/msigd-gui/releases/download/v1.0.0/MSI.Monitor.C
 sudo dpkg -i "MSI Monitor Control_1.0.0_amd64.deb"
 ```
 
-### Flatpak
-
-```bash
-# Install from Flathub (when available)
-flatpak install flathub io.github.aydiler.msigd-gui
-
-# Or build locally
-cd flatpak
-flatpak-builder --user --install build io.github.aydiler.msigd-gui.yml
-```
-
 ### Snap
 
 ```bash
