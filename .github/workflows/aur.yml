@@ -45,12 +45,13 @@ jobs:
           # Update version
           sed -i "s/pkgver=.*/pkgver=${{ steps.version.outputs.version }}/" PKGBUILD
 
-          # Generate .SRCINFO
-          docker run --rm -v "$PWD:/pkg" -w /pkg archlinux:latest bash -c "
-            pacman -Sy --noconfirm pacman-contrib
+          # Generate .SRCINFO using docker with proper setup
+          docker run --rm -v "$PWD:/home/builder/pkg" archlinux:latest bash -c "
+            pacman -Sy --noconfirm pacman-contrib fakeroot
             useradd -m builder
-            chown -R builder /pkg
-            su builder -c 'makepkg --printsrcinfo > .SRCINFO'
+            cd /home/builder/pkg
+            chown builder PKGBUILD
+            su builder -c 'makepkg --printsrcinfo' > .SRCINFO
           "
 
           # Commit and push
@@ -69,12 +70,13 @@ jobs:
           sed -i "s/pkgver=.*/pkgver=${{ steps.version.outputs.version }}/" PKGBUILD
           sed -i "s/1\.[0-9]\+\.[0-9]\+/${{ steps.version.outputs.version }}/g" PKGBUILD
 
-          # Generate .SRCINFO
-          docker run --rm -v "$PWD:/pkg" -w /pkg archlinux:latest bash -c "
-            pacman -Sy --noconfirm pacman-contrib
+          # Generate .SRCINFO using docker with proper setup
+          docker run --rm -v "$PWD:/home/builder/pkg" archlinux:latest bash -c "
+            pacman -Sy --noconfirm pacman-contrib fakeroot
             useradd -m builder
-            chown -R builder /pkg
-            su builder -c 'makepkg --printsrcinfo > .SRCINFO'
+            cd /home/builder/pkg
+            chown builder PKGBUILD
+            su builder -c 'makepkg --printsrcinfo' > .SRCINFO
           "
 
           # Commit and push
