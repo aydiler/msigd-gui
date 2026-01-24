@@ -47,7 +47,7 @@ jobs:
 
           # Generate .SRCINFO using docker as non-root user
           docker run --rm -i archlinux:latest bash -c '
-            pacman -Sy --noconfirm pacman-contrib
+            pacman -Sy --noconfirm pacman-contrib >&2
             useradd -m builder
             cat > /home/builder/PKGBUILD
             cd /home/builder
@@ -73,7 +73,7 @@ jobs:
 
           # Generate .SRCINFO using docker as non-root user
           docker run --rm -i archlinux:latest bash -c '
-            pacman -Sy --noconfirm pacman-contrib
+            pacman -Sy --noconfirm pacman-contrib >&2
             useradd -m builder
             cat > /home/builder/PKGBUILD
             cd /home/builder
