@@ -1,5 +1,5 @@
 name: msigd-gui
-version: '1.0.0'
+version: '1.1.0'
 summary: Control MSI gaming monitors on Linux
 description: |
   A modern desktop GUI application for controlling MSI gaming monitor
@@ -51,12 +51,13 @@ parts:
     override-build: |
       rustup default stable
       npm ci
-      npm run tauri build -- --bundles none
+      npm run build
+      cargo build --release --manifest-path src-tauri/Cargo.toml
 
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
       mkdir -p $SNAPCRAFT_PART_INSTALL/share/applications
       mkdir -p $SNAPCRAFT_PART_INSTALL/share/icons/hicolor/128x128/apps
 
       cp src-tauri/target/release/msigd-gui $SNAPCRAFT_PART_INSTALL/bin/
-      cp msigd-gui.desktop $SNAPCRAFT_PART_INSTALL/share/applications/
+      cp io.github.aydiler.msigd-gui.desktop $SNAPCRAFT_PART_INSTALL/share/applications/msigd-gui.desktop
       cp src-tauri/icons/128x128.png $SNAPCRAFT_PART_INSTALL/share/icons/hicolor/128x128/apps/msigd-gui.png
