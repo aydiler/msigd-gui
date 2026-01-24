@@ -82,8 +82,8 @@ yay -S msigd-gui-bin
 
 ```bash
 # Download from GitHub releases
-wget https://github.com/aydiler/msigd-gui/releases/download/v1.1.0/MSI.Monitor.Control_1.1.0_amd64.deb
-sudo dpkg -i "MSI.Monitor.Control_1.1.0_amd64.deb"
+wget https://github.com/aydiler/msigd-gui/releases/download/v1.1.1/MSI.Monitor.Control_1.1.1_amd64.deb
+sudo dpkg -i "MSI.Monitor.Control_1.1.1_amd64.deb"
 ```
 
 ### Snap
